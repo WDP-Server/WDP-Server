@@ -7,8 +7,9 @@ Welcome! This repository is the central home for the WDP Server project and link
 ---
 
 ## How to play 🖥️
-Ip: play.wdpserver.com
-ALL version are support, the server provides voicechat!
+- **Server IP:** `play.wdpserver.com`
+- **Compatibility:** All client versions are supported — join with any release.
+- **Voice chat:** Built-in voice chat is available in-game.
 
 ## Quick: How to open a good Issue ✅
 
@@ -50,11 +51,11 @@ A one-paragraph description of the problem or feature.
 
 | Repository | Purpose | Link |
 |---|---|---|
-| **WDP-BaseDet** | Base detection & automatic protection systems. Handles clustering, trust, and smart teleport fallbacks. | [./WDP-BaseDet](./WDP-BaseDet) |
-| **WDP-Help** | AI-powered help system serving contextual, server-aware assistance. | [./WDP-Help](./WDP-Help) |
-| **WDP-Progress** | Player progression, skills, and the Score system. Tracks equipment, stats, and multi-dimensional progress. | [./WDP-Progress](./WDP-Progress) |
-| **WDP-Quest** | Progressive community quests and tiered reward system. Unlocks content as the server progresses. | [./WDP-Quest](./WDP-Quest) |
-| **WDP-Start** | New-player onboarding and tutorial flow that gives starters rewards and guidance. | [./WDP-Start](./WDP-Start) |
+| **WDP-BaseDet** | Base detection & automatic protection systems. Handles clustering, trust, and smart teleport fallbacks. | <a href="https://github.com/WDP-Server/WDP-BaseDet" target="_blank" rel="noopener noreferrer">WDP-BaseDet</a> |
+| **WDP-Help** | AI-powered help system serving contextual, server-aware assistance. | <a href="https://github.com/WDP-Server/WDP-Help" target="_blank" rel="noopener noreferrer">WDP-Help</a> |
+| **WDP-Progress** | Player progression, skills, and the Score system. Tracks equipment, stats, and multi-dimensional progress. | <a href="https://github.com/WDP-Server/WDP-Progress" target="_blank" rel="noopener noreferrer">WDP-Progress</a> |
+| **WDP-Quest** | Progressive community quests and tiered reward system. Unlocks content as the server progresses. | <a href="https://github.com/WDP-Server/WDP-Quest" target="_blank" rel="noopener noreferrer">WDP-Quest</a> |
+| **WDP-Start** | New-player onboarding and tutorial flow that gives starters rewards and guidance. | <a href="https://github.com/WDP-Server/WDP-Start" target="_blank" rel="noopener noreferrer">WDP-Start</a> |
 
 > Each of the above modules contains a `FEATURES_SUMMARY.md` and `README.md` with more details. Visit them for implementation specifics, commands, and admin controls.
 
