@@ -4,7 +4,7 @@ title: "[Bug]: "
 labels: ["bug", "need review"]
 assignees:
   - wdp-2010
-type: bug
+type: Bug
 body:
   - type: markdown
     attributes:
@@ -32,15 +32,6 @@ body:
         3. Scroll down to '....'
         4. See error
       render: markdown
-    validations:
-      required: true
-
-  - type: textarea
-    id: expected
-    attributes:
-      label: Expected behavior
-      description: A clear and concise description of what you expected to happen.
-      placeholder: "Example: The chunk should load normally without crashing..."
     validations:
       required: true
 
@@ -77,6 +68,7 @@ body:
     attributes:
       label: Mod Loader
       options:
+        - Vanilla
         - Fabric
         - Quilt
         - Forge
