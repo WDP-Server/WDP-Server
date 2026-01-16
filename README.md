@@ -1,8 +1,8 @@
-<p style="display: flex; align-items: center; justify-content: flex-start; gap: 10px; flex-wrap: wrap;">
-  <a href="https://github.com/WDP-Server" target="_blank" rel="noopener noreferrer">
+<p>
+  <a href="https://github.com/WDP-Server" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: flex; align-items: center; justify-content: flex-start; gap: 10px; flex-wrap: wrap;">
     <img src="assets/logo-scoreboard-cropped.png" alt="WDP Server" width="255" style="max-width:100%;height:auto;image-rendering:pixelated;">
+    <span style="font-size: 3em; font-weight: bold; margin: 0; padding: 0; line-height: 1;">— Main Repository 🔧</span>
   </a>
-  <span style="font-size: 2em; font-weight: bold; margin: 0; padding: 0; line-height: 1;">— Main Repository 🔧</span>
 </p>
 
 [![Discord](https://img.shields.io/badge/Discord-Join-blue.svg)](https://discord.gg/A2vfymZwBE)  [![Open Issues](https://img.shields.io/github/issues/WDP-Server/WDP-Server)](https://github.com/WDP-Server/WDP-Server/issues)  
@@ -38,13 +38,6 @@ A one-paragraph description of the problem or feature.
 2. Step two
 3. Expected result vs actual result
 
-**Environment**
-- Server build: (e.g. paper-1.19.4 #123)
-- WDP version: (git commit or release)
-- Active plugins: (short list)
-
-**Logs & Attachments**
-- Paste relevant logs in triple backticks, or attach a file/gist
 
 **Suggested labels:** bug, enhancement, question
 ```
