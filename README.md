@@ -1,8 +1,8 @@
 <p>
-  <a href="https://github.com/WDP-Server" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: flex; align-items: center; justify-content: flex-start; gap: 10px; flex-wrap: wrap;">
-    <img src="assets/logo-scoreboard-cropped.png" alt="WDP Server" width="255" style="max-width:100%;height:auto;image-rendering:pixelated;">
-    <span style="font-size: 3em; font-weight: bold; margin: 0; padding: 0; line-height: 1;">— Main Repository 🔧</span>
-  </a>
+  <a href="https://github.com/WDP-Server" target="_blank" rel="noopener noreferrer">
+    <img src="assets/logo-scoreboard-cropped.png" alt="WDP Server" width="255" style="max-width:100%;height:auto;image-rendering:pixelated;"></a>
+    <h1>Main Repository 🔧</h1>
+  
 </p>
 
 [![Discord](https://img.shields.io/badge/Discord-Join-blue.svg)](https://discord.gg/A2vfymZwBE)  [![Open Issues](https://img.shields.io/github/issues/WDP-Server/WDP-Server)](https://github.com/WDP-Server/WDP-Server/issues)  
