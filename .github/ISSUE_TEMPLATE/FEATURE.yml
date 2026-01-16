@@ -4,8 +4,8 @@ title: "[Feature]: "
 labels: ["feature", "need review"]   # ← feel free to adjust; e.g. add "suggestion" or "enhancement"
 assignees:
   - wdp-2010
-type: Feature   # ← or "feature_request" if your org uses that exact type string
-projects: ["WDP-Server/""]      # ← auto-adds to your Feature project
+type: Feature
+projects: ["WDP-Server/3"]      # ← auto-adds to your Feature project
 body:
   - type: markdown
     attributes:
