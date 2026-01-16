@@ -1,0 +1,132 @@
+name: Feature Suggestion
+description: Suggest a new feature, improvement, or change for the server/modpack
+title: "[Feature]: "
+labels: ["feature", "need review"]   # ← feel free to adjust; e.g. add "suggestion" or "enhancement"
+assignees:
+  - wdp-2010
+type: Feature   # ← or "feature_request" if your org uses that exact type string
+projects: ["WDP-Server/""]      # ← auto-adds to your Feature project
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature or improvement!  
+        The more detail you provide, the easier it is to discuss and potentially implement.  
+        Please search existing suggestions first to avoid duplicates.
+
+  - type: textarea
+    id: describe-problem
+    attributes:
+      label: Describe the problem or use case
+      description: A clear and concise description of the pain point, missing functionality, or opportunity you're facing. What frustrates you or what would make the server/modpack better?
+      placeholder: "Example: Loading distant chunks is too slow on mid-range hardware, making exploration feel laggy..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed solution or feature
+      description: Describe how you would like this to work. Be as specific as possible about mechanics, UI, commands, config options, performance impact, etc.
+      placeholder: "Example: Add a configurable 'LOD bias' slider in the client settings that reduces detail level beyond X chunks to improve FPS..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you've considered
+      description: Any other solutions or features you've thought about or found elsewhere (other servers, mods, vanilla behaviors)?
+      placeholder: "Example: Using Distant Horizons + Iris, but it conflicts with server-side anti-xray; or a custom plugin that pre-generates chunks..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / Mockups / Videos
+      description: |
+        If applicable, add mockups, diagrams, reference images from other servers/mods, or short videos showing the desired behavior.
+        Drag & drop or paste them here.
+      placeholder: "Drag images/videos/mockups here or use the upload button ↑"
+    validations:
+      required: false
+
+  - type: input
+    id: os
+    attributes:
+      label: OS (if client-side relevant)
+      description: Your operating system (only if the suggestion relates to client performance/setup)
+      placeholder: Windows 11 / macOS Ventura / Linux (Ubuntu 24.04) / etc.
+    validations:
+      required: false
+
+  - type: input
+    id: minecraft-version
+    attributes:
+      label: Minecraft Version
+      placeholder: 1.20.1 / 1.21 / etc.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: modloader
+    attributes:
+      label: Mod Loader / Server Type
+      options:
+        - Vanilla
+        - Fabric
+        - Quilt
+        - Forge
+        - NeoForge
+        - Lunar Client
+        - Other (please specify in additional context)
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: mods-list
+    attributes:
+      label: Relevant Mods / Modpack / Plugins
+      description: List mods, modpack name+version, or server plugins that this suggestion relates to or would interact with.
+      placeholder: |
+        - Distant Horizons 2.1.0-a
+        - Sodium 0.5.8
+        - Iris 1.7.0
+        - or: Fabulously Optimized 5.2.0
+        - Server: Paper 1.20.4 build 456
+    validations:
+      required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: How important is this to you?
+      options:
+        - Critical (server unplayable / major pain point without it)
+        - High (would greatly improve experience)
+        - Medium (nice to have)
+        - Low (minor QoL)
+      default: 2
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Anything else? (e.g. performance impact concerns, balance implications, compatibility worries, similar features in other servers/mods, etc.)
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Agreement
+      description: By submitting this suggestion you agree to follow our community guidelines.
+      options:
+        - label: I have searched and this suggestion has **not** already been requested
+          required: true
+        - label: This is about the WDP-Server experience (not a general Minecraft/mod suggestion)
+          required: true
