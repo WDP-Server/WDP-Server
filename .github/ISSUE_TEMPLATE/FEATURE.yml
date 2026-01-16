@@ -1,25 +1,25 @@
 name: Feature Suggestion
-description: Suggest a new feature, improvement, or change for the server/modpack
+description: Suggest a new feature, command, mechanic, improvement, or change for the server/plugins
 title: "[Feature]: "
-labels: ["feature", "need review"]   # ← feel free to adjust; e.g. add "suggestion" or "enhancement"
+labels: ["feature", "need review"]  # Adjust as needed: add "suggestion", "enhancement", etc.
 assignees:
   - wdp-2010
 type: Feature
-projects: ["WDP-Server/3"]      # ← auto-adds to your Feature project
+projects: ["WDP-Server/3"]  # Auto-adds to your Feature project (update number if different)
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for suggesting a new feature or improvement!  
-        The more detail you provide, the easier it is to discuss and potentially implement.  
-        Please search existing suggestions first to avoid duplicates.
+        Thanks for suggesting a new feature or improvement for the WDP-Server!  
+        The more detail you provide (especially about commands, permissions, config options, or balance), the easier it is to discuss and implement.  
+        **Please search existing suggestions first** to avoid duplicates.
 
   - type: textarea
     id: describe-problem
     attributes:
       label: Describe the problem or use case
-      description: A clear and concise description of the pain point, missing functionality, or opportunity you're facing. What frustrates you or what would make the server/modpack better?
-      placeholder: "Example: Loading distant chunks is too slow on mid-range hardware, making exploration feel laggy..."
+      description: What pain point, missing functionality, or opportunity are you seeing on the server? What frustrates players/admins or what would make the experience better?
+      placeholder: "Example: Players often get lost exploring large worlds with no easy way to mark locations or share coordinates..."
     validations:
       required: true
 
@@ -27,8 +27,8 @@ body:
     id: proposed-solution
     attributes:
       label: Proposed solution or feature
-      description: Describe how you would like this to work. Be as specific as possible about mechanics, UI, commands, config options, performance impact, etc.
-      placeholder: "Example: Add a configurable 'LOD bias' slider in the client settings that reduces detail level beyond X chunks to improve FPS..."
+      description: Describe how you'd like this to work. Include details on mechanics, new/existing commands, permissions, config options, messages, performance impact, etc.
+      placeholder: "Example: Add /waypoint set <name> and /waypoint tp <name> commands. Configurable permission: server.waypoint.use. Limit to 10 waypoints per player (configurable)..."
     validations:
       required: true
 
@@ -36,8 +36,8 @@ body:
     id: alternatives
     attributes:
       label: Alternatives you've considered
-      description: Any other solutions or features you've thought about or found elsewhere (other servers, mods, vanilla behaviors)?
-      placeholder: "Example: Using Distant Horizons + Iris, but it conflicts with server-side anti-xray; or a custom plugin that pre-generates chunks..."
+      description: Any workarounds, existing plugins/commands, vanilla features, or other servers you've seen do something similar?
+      placeholder: "Example: Using /sethome from EssentialsX, but it's per-player homes only and no sharing; or a signs-based system that's clunky..."
     validations:
       required: false
 
@@ -46,20 +46,20 @@ body:
     attributes:
       label: Screenshots / Mockups / Videos
       description: |
-        If applicable, add mockups, diagrams, reference images from other servers/mods, or short videos showing the desired behavior.
+        If applicable, add mockups of commands/UI, config examples, reference images from other servers/plugins, or short videos showing desired behavior.
         Drag & drop or paste them here.
-      placeholder: "Drag images/videos/mockups here or use the upload button ↑"
+      placeholder: "Drag images/videos/mockups/config YAML here or use the upload button ↑"
     validations:
       required: false
 
   - type: input
-    id: os
+    id: server-software
     attributes:
-      label: OS (if client-side relevant)
-      description: Your operating system (only if the suggestion relates to client performance/setup)
-      placeholder: Windows 11 / macOS Ventura / Linux (Ubuntu 24.04) / etc.
+      label: Server Software & Version
+      description: e.g. Paper, Purpur, Spigot, Pufferfish...
+      placeholder: Paper 1.21.1 build 123
     validations:
-      required: false
+      required: true
 
   - type: input
     id: minecraft-version
@@ -69,46 +69,41 @@ body:
     validations:
       required: true
 
-  - type: dropdown
-    id: modloader
-    attributes:
-      label: Mod Loader / Server Type
-      options:
-        - Vanilla
-        - Fabric
-        - Quilt
-        - Forge
-        - NeoForge
-        - Lunar Client
-        - Other (please specify in additional context)
-      default: 0
-    validations:
-      required: true
-
   - type: textarea
-    id: mods-list
+    id: plugins-list
     attributes:
-      label: Relevant Mods / Modpack / Plugins
-      description: List mods, modpack name+version, or server plugins that this suggestion relates to or would interact with.
+      label: Relevant Plugins
+      description: List key plugins (with versions if known) that this feature relates to or might interact with. Include core ones like EssentialsX, LuckPerms, WorldGuard, etc. if relevant.
       placeholder: |
-        - Distant Horizons 2.1.0-a
-        - Sodium 0.5.8
-        - Iris 1.7.0
-        - or: Fabulously Optimized 5.2.0
-        - Server: Paper 1.20.4 build 456
+        - EssentialsX 2.21.0
+        - LuckPerms 5.4.140
+        - WorldEdit 7.3.7
+        - ViaVersion 5.0.5
+        - or: Full plugin list if short
     validations:
       required: false
 
   - type: dropdown
     id: priority
     attributes:
-      label: How important is this to you?
+      label: How important is this to you / the community?
       options:
-        - Critical (server unplayable / major pain point without it)
-        - High (would greatly improve experience)
-        - Medium (nice to have)
-        - Low (minor QoL)
+        - Critical (major pain point / limits gameplay significantly)
+        - High (would greatly improve experience for many players)
+        - Medium (nice to have / QoL)
+        - Low (minor suggestion)
       default: 2
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs-config
+    attributes:
+      label: Relevant config / logs (optional)
+      description: |
+        If your suggestion relates to a specific plugin's config, paste a snippet here.  
+        Or if you've seen related errors/behavior in logs, paste relevant lines (use https://mclo.gs/ for long pastes).
+      render: yaml  # or shell for logs
     validations:
       required: false
 
@@ -116,7 +111,7 @@ body:
     id: additional
     attributes:
       label: Additional context
-      description: Anything else? (e.g. performance impact concerns, balance implications, compatibility worries, similar features in other servers/mods, etc.)
+      description: Anything else? (performance concerns, balance implications, economy impact, compatibility worries, similar features on other servers, etc.)
     validations:
       required: false
 
@@ -128,5 +123,5 @@ body:
       options:
         - label: I have searched and this suggestion has **not** already been requested
           required: true
-        - label: This is about the WDP-Server experience (not a general Minecraft/mod suggestion)
+        - label: This is specifically about the WDP-Server experience (not a general Minecraft/plugin suggestion)
           required: true
