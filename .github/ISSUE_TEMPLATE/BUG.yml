@@ -5,7 +5,7 @@ labels: ["need review"]
 assignees:
   - wdp-2010
 type: Bug
-project: ["WDP-Server/2"]
+projects: ["WDP-Server/2"]
 body:
   - type: markdown
     attributes:
