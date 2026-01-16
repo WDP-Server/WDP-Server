@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/WDP-Server" target="_blank" rel="noopener noreferrer">
-    <img src="assets/logo-scoreboard.png" alt="WDP Server" width="640" style="max-width:100%;height:auto;">
+    <img src="assets/logo-scoreboard-cropped.png" alt="WDP Server" width="255" style="max-width:100%;height:auto;image-rendering:pixelated;">
   </a>
 </p>
 
