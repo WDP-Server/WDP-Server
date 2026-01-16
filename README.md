@@ -1,12 +1,12 @@
-<p align="center">
+<p style="display: flex; align-items: center; justify-content: flex-start; gap: 10px; flex-wrap: wrap;">
   <a href="https://github.com/WDP-Server" target="_blank" rel="noopener noreferrer">
     <img src="assets/logo-scoreboard-cropped.png" alt="WDP Server" width="255" style="max-width:100%;height:auto;image-rendering:pixelated;">
   </a>
+  <span style="font-size: 2em; font-weight: bold; margin: 0; padding: 0; line-height: 1;">— Main Repository 🔧</span>
 </p>
 
-# WDP Server — Main Repository 🔧
-
 [![Discord](https://img.shields.io/badge/Discord-Join-blue.svg)](https://discord.gg/A2vfymZwBE)  [![Open Issues](https://img.shields.io/github/issues/WDP-Server/WDP-Server)](https://github.com/WDP-Server/WDP-Server/issues)  
+
 
 Welcome! This repository is the central home for the WDP Server project and links to the main modules. Use the Discord link above for real-time help, community discussion, and announcements.
 
