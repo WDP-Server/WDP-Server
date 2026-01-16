@@ -6,6 +6,10 @@ Welcome! This repository is the central home for the WDP Server project and link
 
 ---
 
+## How to play 🖥️
+Ip: play.wdpserver.com
+ALL version are support, the server provides voicechat!
+
 ## Quick: How to open a good Issue ✅
 
 Please follow these steps to help us triage and fix things quickly:
