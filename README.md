@@ -17,32 +17,43 @@ Welcome! This repository is the central home for the WDP Server project and link
 - **Compatibility:** All client versions are supported — join with any release.
 - **Voice chat:** Built-in voice chat is available in-game.
 
-## Quick: How to open a good Issue ✅
+## How YOU Can Report Bugs or Suggest Features 🎮
 
-Please follow these steps to help us triage and fix things quickly:
+If you encounter a bug while playing or have a cool idea for a new feature, we'd love to hear from you! Reporting helps us make the server better for everyone.
 
-1. Check existing issues using the Issues tab — your problem may already be reported or fixed.
-2. Click **New issue** and choose a template (if available). If you don't see a template, use the format below.
-3. Fill in the fields and attach logs, screenshots, or minimal reproduction steps.
+Please follow these simple steps:
 
-Use this issue body template when reporting bugs or feature requests:
+1. Check the [Issues tab](https://github.com/WDP-Server/WDP-Server/issues) — someone might have already reported your issue or idea.
+2. Click **New issue** and use the template below to describe what you found.
+3. Be as detailed as possible, and attach screenshots or videos if you can!
+
+Use this template for your report:
 
 ```markdown
-**Title:** [bug] Short clear title here
+**Title:** [Bug] or [Feature] Short and clear title
 
-**Summary**
-A one-paragraph description of the problem or feature.
+**What happened?**
+Describe the bug you experienced or the feature you'd like to suggest. What were you doing when it happened?
 
-**Steps to reproduce**
-1. Step one
-2. Step two
-3. Expected result vs actual result
+**Steps to reproduce (for bugs only)**
+1. Step one: What you did first
+2. Step two: What happened next
+3. And so on...
 
+**What did you expect to happen?**
+Explain what you thought should happen instead.
 
-**Suggested labels:** bug, enhancement, question
+**Screenshots or videos**
+Attach any images or clips that show the issue (drag and drop them here).
+
+**Your Minecraft version**
+What version of Minecraft are you using? (e.g., 1.20.1)
+
+**Anything else?**
+Any other details that might help, like when it happens or who else was affected.
 ```
 
-> Tip: If your report includes logs, wrap them with triple backticks (```), and mark the approximate timestamps of the error.
+> Tip: Screenshots are super helpful! Press F2 in Minecraft to take one, and it saves to your screenshots folder.
 
 ---
 
