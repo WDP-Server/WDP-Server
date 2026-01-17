@@ -6,38 +6,41 @@ on:
   workflow_dispatch:
     inputs:
       target_repo:
-        description: 'Target repository (e.g., owner/WDP-BaseDet)'
+        description: Target repository (owner/repo)
         required: true
-        default: 'owner/WDP-BaseDet'
+        default: WDP-Server/WDP-BaseDet
+
+permissions:
+  contents: read
+  issues: write
 
 jobs:
   clone-issue:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      issues: write
 
     steps:
-      - name: Set target repo based on label
-        id: set-target
-        env:
-          LABEL_NAME: ${{ github.event_name == 'issues' && github.event.label.name || '' }}
+      - name: Determine target repository
+        id: target
         run: |
-          if [[ "$LABEL_NAME" == WDP-* ]]; then
-            OWNER="${{ github.repository_owner }}"
-            echo "target_repo=$OWNER/$LABEL_NAME" >> $GITHUB_OUTPUT
+          if [ "${{ github.event_name }}" = "issues" ]; then
+            LABEL="${{ github.event.label.name }}"
+            if [[ "$LABEL" == WDP-* ]]; then
+              echo "repo=${{ github.repository_owner }}/$LABEL" >> "$GITHUB_OUTPUT"
+              echo "should_clone=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "should_clone=false" >> "$GITHUB_OUTPUT"
+            fi
           else
-            echo "Label does not start with 'WDP-'. Skipping."
-            exit 0
+            echo "repo=${{ inputs.target_repo }}" >> "$GITHUB_OUTPUT"
+            echo "should_clone=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Create duplicate issue in target repo
-        if: ${{ steps.set-target.outputs.target_repo || github.event_name == 'workflow_dispatch' }}
+      - name: Clone issue to target repo
+        if: steps.target.outputs.should_clone == 'true'
         env:
-          GH_TOKEN: ${{ secrets.PAT_FOR_CLONE }}
-          TARGET_REPO: ${{ steps.set-target.outputs.target_repo || inputs.target_repo }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           gh issue create \
-            --repo "$TARGET_REPO" \
-            --title "${{ github.event.issue.title }}" \
-            --body "${{ github.event.issue.body }}\n\nOriginal issue: ${{ github.event.issue.html_url }}"
+            --repo "${{ steps.target.outputs.repo }}" \
+            --title "${{ github.event.issue.title || 'Manual issue clone' }}" \
+            --body "${{ github.event.issue.body || '' }}
