@@ -38,6 +38,27 @@ jobs:
           TARGETS="$(echo "$TARGETS" | xargs)"
           echo "targets=$TARGETS" >> $GITHUB_OUTPUT
 
+      # Debug: list installation repos available to the token and test access
+      - name: Debug: list installation repos & test repo access
+        if: steps.detect.outputs.targets != ''
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+          TARGETS: ${{ steps.detect.outputs.targets }}
+        run: |
+          set -euo pipefail
+          echo "Listing installation repositories accessible to token:"
+          # Ensure gh uses the generated token
+          export GITHUB_TOKEN="$GH_TOKEN"
+          gh api -H "Accept: application/vnd.github+json" /installation/repositories || true
+          for REPO in $TARGETS; do
+            if [ -z "$REPO" ]; then
+              continue
+            fi
+            echo "Testing access to $REPO ..."
+            http_code=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$REPO" || echo "000")
+            echo "$REPO -> $http_code"
+          done
+
       # Search the target repo(s) for any open issue whose body contains the original issue URL and close them
       - name: Close matching issue(s) in target repo(s)
         if: steps.detect.outputs.targets != ''
