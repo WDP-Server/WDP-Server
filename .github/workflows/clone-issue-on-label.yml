@@ -16,88 +16,28 @@ jobs:
     permissions:
       contents: read
       issues: write
-    
-    env:
-      GH_TOKEN: ${{ secrets.PAT_FOR_CLONE }}
 
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Ensure GitHub CLI Key is Updated
-        env:
-          GH_KEYRING_URL: https://cli.github.com/packages/githubcli-archive-keyring.gpg
-        run: |
-          # Install wget if needed
-          if ! type -p wget >/dev/null; then
-            sudo apt-get update && sudo apt-get install -y wget
-          fi
-          
-          # Create directory and download the current key
-          sudo mkdir -p -m 755 /etc/apt/keyrings
-          sudo wget -qO /etc/apt/keyrings/githubcli-archive-keyring.gpg "$GH_KEYRING_URL"
-          sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
-          
-          # Re-add the repository source with the correct 'signed-by' path
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-          
-          # Update package lists
-          sudo apt-get update
-
-      - name: Install GitHub CLI
-        run: |
-          # Now install GitHub CLI after fixing the key issue
-          sudo apt-get install -y gh
-          gh --version
-
       - name: Set target repo based on label
         id: set-target
         env:
           LABEL_NAME: ${{ github.event_name == 'issues' && github.event.label.name || '' }}
         run: |
-          echo "Label name: $LABEL_NAME"
           if [[ "$LABEL_NAME" == WDP-* ]]; then
             OWNER="${{ github.repository_owner }}"
-            TARGET_REPO="$OWNER/$LABEL_NAME"
-            echo "target_repo=$TARGET_REPO" >> $GITHUB_OUTPUT
-            echo "Setting target repo to: $TARGET_REPO"
+            echo "target_repo=$OWNER/$LABEL_NAME" >> $GITHUB_OUTPUT
           else
-            echo "Label '$LABEL_NAME' does not start with 'WDP-'. Skipping."
+            echo "Label does not start with 'WDP-'. Skipping."
             exit 0
           fi
-
-      - name: Debug info
-        if: ${{ steps.set-target.outputs.target_repo || github.event_name == 'workflow_dispatch' }}
-        run: |
-          echo "Source repo: ${{ github.repository }}"
-          echo "Issue title: ${{ github.event.issue.title }}"
-          echo "Issue URL: ${{ github.event.issue.html_url }}"
-          echo "Target repo: ${{ steps.set-target.outputs.target_repo || github.event.inputs.target_repo }}"
 
       - name: Create duplicate issue in target repo
         if: ${{ steps.set-target.outputs.target_repo || github.event_name == 'workflow_dispatch' }}
         env:
-          TARGET_REPO: ${{ steps.set-target.outputs.target_repo || github.event.inputs.target_repo }}
+          GH_TOKEN: ${{ secrets.PAT_FOR_CLONE }}
+          TARGET_REPO: ${{ steps.set-target.outputs.target_repo || inputs.target_repo }}
         run: |
-          # Create a temporary file for the issue body
-          BODY_FILE=$(mktemp)
-          
-          # Write body content to file
-          cat << 'EOF' > "$BODY_FILE"
-          ${{ github.event.issue.body }}
-
-          **Cloned from:** ${{ github.event.issue.html_url }}
-          **Original Issue:** #${{ github.event.issue.number }}
-          **Cloned by:** ${{ github.workflow }} workflow
-          EOF
-          
-          # Create the issue using GitHub CLI with body from file
           gh issue create \
             --repo "$TARGET_REPO" \
             --title "${{ github.event.issue.title }}" \
-            --body-file "$BODY_FILE" \
-            --label "cloned"
-          
-          # Clean up
-          rm "$BODY_FILE"
-          echo "Issue created successfully!"
+            --body "${{ github.event.issue.body }}\n\nOriginal issue: ${{ github.event.issue.html_url }}"
