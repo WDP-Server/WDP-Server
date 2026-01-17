@@ -67,18 +67,25 @@ jobs:
           # Create issue in target repository
           echo "Creating issue in $TARGET_REPO"
           
-          # Extract issue body safely
-          BODY="${{ github.event.issue.body }}"
+          # Create a temporary file for the issue body
+          BODY_FILE=$(mktemp)
           
-          # Create the issue using GitHub CLI
+          # Write body content to file
+          cat << 'EOF' > "$BODY_FILE"
+          ${{ github.event.issue.body }}
+      
+          **Cloned from:** ${{ github.event.issue.html_url }}
+          **Original Issue:** #${{ github.event.issue.number }}
+          **Cloned by:** ${{ github.workflow }} workflow
+          EOF
+          
+          # Create the issue using GitHub CLI with body from file
           gh issue create \
             --repo "$TARGET_REPO" \
             --title "${{ github.event.issue.title }}" \
-            --body "$BODY
-              
-**Cloned from:** ${{ github.event.issue.html_url }}
-**Original Issue:** #${{ github.event.issue.number }}
-**Cloned by:** ${{ github.workflow }} workflow" \
+            --body-file "$BODY_FILE" \
             --label "cloned"
           
+          # Clean up
+          rm "$BODY_FILE"
           echo "Issue created successfully!"
