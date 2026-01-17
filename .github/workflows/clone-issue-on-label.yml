@@ -40,7 +40,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          printf "%s\n\n---\nOriginal issue: %s\n" \
+            "${{ github.event.issue.body }}" \
+            "${{ github.event.issue.html_url }}" > body.txt
+
           gh issue create \
             --repo "${{ steps.target.outputs.repo }}" \
-            --title "${{ github.event.issue.title || 'Manual issue clone' }}" \
-            --body "${{ github.event.issue.body || '' }}
+            --title "${{ github.event.issue.title }}" \
+            --body-file body.txt
