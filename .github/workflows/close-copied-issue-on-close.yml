@@ -1,0 +1,76 @@
+name: Close Copied Issue On Close (GitHub App Auth)
+
+on:
+  issues:
+    types: [closed]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  close_copied_issue:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Authenticate as GitHub App
+      - name: Generate a GitHub App token
+        id: generate-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      # Determine target repository from labels (labels like `WDP-RepoName`)
+      - name: Determine target repositories and original URL
+        id: detect
+        run: |
+          ORIGINAL_URL=$(jq -r .issue.html_url < "$GITHUB_EVENT_PATH")
+          echo "original_url=$ORIGINAL_URL" >> $GITHUB_OUTPUT
+          REPO_OWNER="${{ github.repository_owner }}"
+          TARGETS=""
+          for L in $(jq -r '.issue.labels[].name' < "$GITHUB_EVENT_PATH" 2>/dev/null || true); do
+            if [[ "$L" == WDP-* ]]; then
+              TARGETS="$TARGETS $REPO_OWNER/$L"
+            fi
+          done
+          # Trim leading/trailing whitespace
+          TARGETS="$(echo "$TARGETS" | xargs)"
+          echo "targets=$TARGETS" >> $GITHUB_OUTPUT
+
+      # Search the target repo(s) for any open issue whose body contains the original issue URL and close them
+      - name: Close matching issue(s) in target repo(s)
+        if: steps.detect.outputs.targets != ''
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+          ORIGINAL_URL: ${{ steps.detect.outputs.original_url }}
+          TARGETS: ${{ steps.detect.outputs.targets }}
+        run: |
+          set -euo pipefail
+          # Iterate each target repo and search open issues for the original URL
+          for REPO in $TARGETS; do
+            echo "Searching open issues in $REPO for original URL..."
+
+            PAGE=1
+            CLOSED_ANY=false
+            while true; do
+              ISSUES_JSON=$(gh api -H "Accept: application/vnd.github+json" "/repos/$REPO/issues?state=open&per_page=100&page=$PAGE" || echo '[]')
+              found_numbers=$(echo "$ISSUES_JSON" | jq -r --arg url "$ORIGINAL_URL" '.[] | select(.body != null and (.body | contains($url))) | .number' || true)
+              if [[ -z "$found_numbers" ]]; then
+                break
+              fi
+              for NUM in $found_numbers; do
+                echo "Closing issue #$NUM in $REPO"
+                gh api -X PATCH -H "Accept: application/vnd.github+json" "/repos/$REPO/issues/$NUM" -f state=closed
+                CLOSED_ANY=true
+              done
+              count=$(echo "$ISSUES_JSON" | jq 'length' || echo 0)
+              if [[ "$count" -lt 100 ]]; then
+                break
+              fi
+              PAGE=$((PAGE+1))
+            done
+            if [[ "$CLOSED_ANY" = false ]]; then
+              echo "No matching open issues found in $REPO"
+            fi
+          done
