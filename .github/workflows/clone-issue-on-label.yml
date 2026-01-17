@@ -3,7 +3,7 @@ name: Clone Issue to Matching Repo on Label
 on:
   issues:
     types: [labeled]
-  workflow_dispatch:  # Optional: For manual testing
+  workflow_dispatch:
     inputs:
       target_repo:
         description: 'Target repository (e.g., owner/WDP-BaseDet)'
@@ -17,7 +17,6 @@ jobs:
       contents: read
       issues: write
     
-    # Add missing permissions for cross-repo access
     env:
       GH_TOKEN: ${{ secrets.PAT_FOR_CLONE }}
 
@@ -25,12 +24,31 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Ensure GitHub CLI Key is Updated
+        env:
+          GH_KEYRING_URL: https://cli.github.com/packages/githubcli-archive-keyring.gpg
+        run: |
+          # Install wget if needed
+          if ! type -p wget >/dev/null; then
+            sudo apt-get update && sudo apt-get install -y wget
+          fi
+          
+          # Create directory and download the current key
+          sudo mkdir -p -m 755 /etc/apt/keyrings
+          sudo wget -qO /etc/apt/keyrings/githubcli-archive-keyring.gpg "$GH_KEYRING_URL"
+          sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+          
+          # Re-add the repository source with the correct 'signed-by' path
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          
+          # Update package lists
+          sudo apt-get update
+
       - name: Install GitHub CLI
         run: |
-          type -p gh >/dev/null || curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
-          sudo apt update
-          sudo apt install gh -y
+          # Now install GitHub CLI after fixing the key issue
+          sudo apt-get install -y gh
+          gh --version
 
       - name: Set target repo based on label
         id: set-target
@@ -61,19 +79,13 @@ jobs:
         env:
           TARGET_REPO: ${{ steps.set-target.outputs.target_repo || github.event.inputs.target_repo }}
         run: |
-          # Set up GitHub CLI authentication
-          gh auth setup-git
-          
-          # Create issue in target repository
-          echo "Creating issue in $TARGET_REPO"
-          
           # Create a temporary file for the issue body
           BODY_FILE=$(mktemp)
           
           # Write body content to file
           cat << 'EOF' > "$BODY_FILE"
           ${{ github.event.issue.body }}
-      
+
           **Cloned from:** ${{ github.event.issue.html_url }}
           **Original Issue:** #${{ github.event.issue.number }}
           **Cloned by:** ${{ github.workflow }} workflow
