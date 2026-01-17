@@ -8,7 +8,7 @@ on:
       target_repo:
         description: 'Target repository (e.g., owner/WDP-BaseDet)'
         required: true
-        default: 'owner/WDP-BaseDet'  # Replace with a test default
+        default: 'owner/WDP-BaseDet'
 
 jobs:
   clone-issue:
@@ -16,28 +16,69 @@ jobs:
     permissions:
       contents: read
       issues: write
+    
+    # Add missing permissions for cross-repo access
+    env:
+      GH_TOKEN: ${{ secrets.PAT_FOR_CLONE }}
 
     steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install GitHub CLI
+        run: |
+          type -p gh >/dev/null || curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+          sudo apt update
+          sudo apt install gh -y
+
       - name: Set target repo based on label
         id: set-target
         env:
           LABEL_NAME: ${{ github.event_name == 'issues' && github.event.label.name || '' }}
         run: |
+          echo "Label name: $LABEL_NAME"
           if [[ "$LABEL_NAME" == WDP-* ]]; then
             OWNER="${{ github.repository_owner }}"
-            echo "target_repo=$OWNER/$LABEL_NAME" >> $GITHUB_OUTPUT
+            TARGET_REPO="$OWNER/$LABEL_NAME"
+            echo "target_repo=$TARGET_REPO" >> $GITHUB_OUTPUT
+            echo "Setting target repo to: $TARGET_REPO"
           else
-            echo "Label does not start with 'WDP-'. Skipping."
-            exit 0  # Exit successfully to skip further steps
+            echo "Label '$LABEL_NAME' does not start with 'WDP-'. Skipping."
+            exit 0
           fi
+
+      - name: Debug info
+        if: ${{ steps.set-target.outputs.target_repo || github.event_name == 'workflow_dispatch' }}
+        run: |
+          echo "Source repo: ${{ github.repository }}"
+          echo "Issue title: ${{ github.event.issue.title }}"
+          echo "Issue URL: ${{ github.event.issue.html_url }}"
+          echo "Target repo: ${{ steps.set-target.outputs.target_repo || github.event.inputs.target_repo }}"
 
       - name: Create duplicate issue in target repo
         if: ${{ steps.set-target.outputs.target_repo || github.event_name == 'workflow_dispatch' }}
         env:
-          GH_TOKEN: ${{ secrets.PAT_FOR_CLONE }}  # Use PAT for cross-repo access
-          TARGET_REPO: ${{ steps.set-target.outputs.target_repo || inputs.target_repo }}
+          TARGET_REPO: ${{ steps.set-target.outputs.target_repo || github.event.inputs.target_repo }}
         run: |
+          # Set up GitHub CLI authentication
+          gh auth setup-git
+          
+          # Create issue in target repository
+          echo "Creating issue in $TARGET_REPO"
+          
+          # Extract issue body safely
+          BODY="${{ github.event.issue.body }}"
+          
+          # Create the issue using GitHub CLI
           gh issue create \
             --repo "$TARGET_REPO" \
             --title "${{ github.event.issue.title }}" \
-            --body "${{ github.event.issue.body }}\n\nOriginal issue: ${{ github.event.issue.html_url }}"
+            --body "$BODY
+              
+**Cloned from:** ${{ github.event.issue.html_url }}
+**Original Issue:** #${{ github.event.issue.number }}
+**Cloned by:** ${{ github.workflow }} workflow" \
+            --label "cloned"
+          
+          echo "Issue created successfully!"
