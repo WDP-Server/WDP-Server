@@ -34,7 +34,7 @@ jobs:
       - name: Create duplicate issue in target repo
         if: ${{ steps.set-target.outputs.target_repo || github.event_name == 'workflow_dispatch' }}
         env:
-          GH_TOKEN: ${{ github.token }}  # Switch to ${{ secrets.PAT_FOR_CLONE }} if auth fails
+          GH_TOKEN: ${{ secrets.PAT_FOR_CLONE }}  # Use PAT for cross-repo access
           TARGET_REPO: ${{ steps.set-target.outputs.target_repo || inputs.target_repo }}
         run: |
           gh issue create \
