@@ -1,0 +1,127 @@
+name: Feature Suggestion
+description: Suggest a new feature, command, mechanic, improvement, or change for the server/plugins
+title: "[Feature]: "
+labels: ["feature", "need review"]  # Adjust as needed: add "suggestion", "enhancement", etc.
+assignees:
+  - wdp-2010
+type: Feature
+projects: ["WDP-Server/3"]  # Auto-adds to your Feature project (update number if different)
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature or improvement for the WDP-Server!  
+        The more detail you provide (especially about commands, permissions, config options, or balance), the easier it is to discuss and implement.  
+        **Please search existing suggestions first** to avoid duplicates.
+
+  - type: textarea
+    id: describe-problem
+    attributes:
+      label: Describe the problem or use case
+      description: What pain point, missing functionality, or opportunity are you seeing on the server? What frustrates players/admins or what would make the experience better?
+      placeholder: "Example: Players often get lost exploring large worlds with no easy way to mark locations or share coordinates..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed solution or feature
+      description: Describe how you'd like this to work. Include details on mechanics, new/existing commands, permissions, config options, messages, performance impact, etc.
+      placeholder: "Example: Add /waypoint set <name> and /waypoint tp <name> commands. Configurable permission: server.waypoint.use. Limit to 10 waypoints per player (configurable)..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you've considered
+      description: Any workarounds, existing plugins/commands, vanilla features, or other servers you've seen do something similar?
+      placeholder: "Example: Using /sethome from EssentialsX, but it's per-player homes only and no sharing; or a signs-based system that's clunky..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / Mockups / Videos
+      description: |
+        If applicable, add mockups of commands/UI, config examples, reference images from other servers/plugins, or short videos showing desired behavior.
+        Drag & drop or paste them here.
+      placeholder: "Drag images/videos/mockups/config YAML here or use the upload button ↑"
+    validations:
+      required: false
+
+  - type: input
+    id: server-software
+    attributes:
+      label: Server Software & Version
+      description: e.g. Paper, Purpur, Spigot, Pufferfish...
+      placeholder: Paper 1.21.1 build 123
+    validations:
+      required: true
+
+  - type: input
+    id: minecraft-version
+    attributes:
+      label: Minecraft Version
+      placeholder: 1.20.1 / 1.21 / etc.
+    validations:
+      required: true
+
+  - type: textarea
+    id: plugins-list
+    attributes:
+      label: Relevant Plugins
+      description: List key plugins (with versions if known) that this feature relates to or might interact with. Include core ones like EssentialsX, LuckPerms, WorldGuard, etc. if relevant.
+      placeholder: |
+        - EssentialsX 2.21.0
+        - LuckPerms 5.4.140
+        - WorldEdit 7.3.7
+        - ViaVersion 5.0.5
+        - or: Full plugin list if short
+    validations:
+      required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: How important is this to you / the community?
+      options:
+        - Critical (major pain point / limits gameplay significantly)
+        - High (would greatly improve experience for many players)
+        - Medium (nice to have / QoL)
+        - Low (minor suggestion)
+      default: 2
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs-config
+    attributes:
+      label: Relevant config / logs (optional)
+      description: |
+        If your suggestion relates to a specific plugin's config, paste a snippet here.  
+        Or if you've seen related errors/behavior in logs, paste relevant lines (use https://mclo.gs/ for long pastes).
+      render: yaml  # or shell for logs
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Anything else? (performance concerns, balance implications, economy impact, compatibility worries, similar features on other servers, etc.)
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Agreement
+      description: By submitting this suggestion you agree to follow our community guidelines.
+      options:
+        - label: I have searched and this suggestion has **not** already been requested
+          required: true
+        - label: This is specifically about the WDP-Server experience (not a general Minecraft/plugin suggestion)
+          required: true
