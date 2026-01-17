@@ -1,63 +1,57 @@
-name: Clone Issue to Matching Repo on Label
+name: Copy Issue On Label (GitHub App Auth)
 
 on:
   issues:
     types: [labeled]
   workflow_dispatch:
-    inputs:
-      target_repo:
-        description: Target repository (owner/repo)
-        required: true
-        default: WDP-Server/WDP-BaseDet
 
 permissions:
-  contents: read
   issues: write
+  contents: read
 
 jobs:
-  clone-issue:
+  copy_issue_with_app_token:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Determine target repository
+      # Authenticate as GitHub App
+      - name: Generate a GitHub App token
+        id: generate-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      # Determine target repository from label
+      - name: Set target repo
         id: target
         run: |
-          if [ "${{ github.event_name }}" = "issues" ]; then
-            LABEL="${{ github.event.label.name }}"
-            if [[ "$LABEL" == WDP-* ]]; then
-              echo "repo=${{ github.repository_owner }}/$LABEL" >> "$GITHUB_OUTPUT"
-              echo "should_clone=true" >> "$GITHUB_OUTPUT"
-            else
-              echo "should_clone=false" >> "$GITHUB_OUTPUT"
-            fi
+          LABEL="${{ github.event.label.name }}"
+          if [[ "$LABEL" == WDP-* ]]; then
+            echo "repo=${{ github.repository_owner }}/$LABEL" >> $GITHUB_OUTPUT
+            echo "should_clone=true" >> $GITHUB_OUTPUT
           else
-            echo "repo=${{ inputs.target_repo }}" >> "$GITHUB_OUTPUT"
-            echo "should_clone=true" >> "$GITHUB_OUTPUT"
+            echo "should_clone=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Prepare issue body safely
+      # Prepare issue body safely
+      - name: Prepare issue body
         if: steps.target.outputs.should_clone == 'true'
-        env:
-          ISSUE_BODY_JSON: ${{ toJSON(github.event.issue.body) }}
-          ISSUE_URL: ${{ github.event.issue.html_url }}
         run: |
-          echo "$ISSUE_BODY_JSON" | jq -r . > body.txt
+          echo "${{ github.event.issue.body }}" > body.txt
+          echo >> body.txt
+          echo "---" >> body.txt
+          echo "Original issue: ${{ github.event.issue.html_url }}" >> body.txt
 
-          {
-            cat body.txt
-            echo
-            echo "---"
-            echo "Original issue: $ISSUE_URL"
-          } > final_body.txt
-
+      # Use the GitHub App token to create the issue
       - name: Create issue in target repository
         if: steps.target.outputs.should_clone == 'true'
         env:
-          GH_TOKEN: ${{ secrets.ISSUE_CLONE_WORKFLOW }}
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
           TARGET_REPO: ${{ steps.target.outputs.repo }}
           ISSUE_TITLE: ${{ github.event.issue.title }}
         run: |
           gh issue create \
             --repo "$TARGET_REPO" \
             --title "$ISSUE_TITLE" \
-            --body-file final_body.txt
+            --body-file body.txt
