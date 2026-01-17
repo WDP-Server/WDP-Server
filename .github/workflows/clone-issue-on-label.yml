@@ -1,13 +1,47 @@
-      - name: Clone issue to target repo
+name: Clone Issue to Matching Repo on Label
+
+on:
+  issues:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      target_repo:
+        description: Target repository (owner/repo)
+        required: true
+        default: WDP-Server/WDP-BaseDet
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  clone-issue:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Determine target repository
+        id: target
+        run: |
+          if [ "${{ github.event_name }}" = "issues" ]; then
+            LABEL="${{ github.event.label.name }}"
+            if [[ "$LABEL" == WDP-* ]]; then
+              echo "repo=${{ github.repository_owner }}/$LABEL" >> "$GITHUB_OUTPUT"
+              echo "should_clone=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "should_clone=false" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "repo=${{ inputs.target_repo }}" >> "$GITHUB_OUTPUT"
+            echo "should_clone=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Prepare issue body safely
         if: steps.target.outputs.should_clone == 'true'
         env:
-          GH_TOKEN: ${{ github.token }}
-          TARGET_REPO: ${{ steps.target.outputs.repo }}
-          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY_JSON: ${{ toJSON(github.event.issue.body) }}
           ISSUE_URL: ${{ github.event.issue.html_url }}
-          ISSUE_BODY_B64: ${{ github.event.issue.body && toJSON(github.event.issue.body) }}
         run: |
-          echo "$ISSUE_BODY_B64" | jq -r . > body.txt
+          echo "$ISSUE_BODY_JSON" | jq -r . > body.txt
 
           {
             cat body.txt
@@ -16,6 +50,13 @@
             echo "Original issue: $ISSUE_URL"
           } > final_body.txt
 
+      - name: Create issue in target repository
+        if: steps.target.outputs.should_clone == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_REPO: ${{ steps.target.outputs.repo }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
           gh issue create \
             --repo "$TARGET_REPO" \
             --title "$ISSUE_TITLE" \
