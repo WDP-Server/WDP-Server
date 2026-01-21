@@ -5,4 +5,4 @@
 ## Commands
 
 * [🏡 /home](commands/home.md)
-* [/sethome](commands/sethome.md)
+* [🏠 /sethome](commands/sethome.md)
